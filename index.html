@@ -2,9 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>명예 해양안전요원 임명장 발급</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
@@ -26,11 +31,16 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            box-sizing: border-box; /* 모바일 폭 터짐 방지 */
         }
         h1 {
             color: #222;
             font-size: 24px;
             margin-bottom: 10px;
+        }
+        /* 🌟 상단 안내 텍스트가 모바일에서 어색하게 짤리지 않도록 수정 */
+        .container p {
+            word-break: keep-all;
         }
         .input-group {
             margin: 20px 0;
@@ -72,13 +82,14 @@
             position: relative;
             text-align: center;
             box-shadow: 0 0 25px rgba(0,0,0,0.1);
+            margin: 0 auto; /* 🌟 PC/모바일 언제나 정중앙 정렬 보장 */
             
-            /* 전체 글꼴 궁서체 지정 */
-            font-family: 'Gungsuh', 'GungsuhChe', '궁서', '궁서체', 'Batang', serif;
+            /* 🌟 기존 궁서체 우선 기조 유지 + 모바일용 서체 연동 */
+            font-family: 'Gungsuh', 'GungsuhChe', '궁서', '궁서체', 'Hahmlet', 'Batang', serif;
             overflow: hidden;
         }
 
-        /* ✨ 보내주신 인하대학교 정식 로고 워터마크 설정 ✨ */
+        /* ✨ 기존 원본 로고 이미지 호출 방식으로 원상 복구 ✨ */
         .watermark {
             position: absolute;
             top: 53%;
@@ -163,7 +174,7 @@
             margin-top: 45px;
             text-align: center; 
             white-space: pre-line; 
-            word-break: keep-all;
+            word-break: keep-all; /* 🌟 모바일 글자 줄바꿈 짤림 방지 적용 */
         }
         
         .cert-date {
@@ -202,7 +213,6 @@
             font-family: sans-serif;
         }
         
-        /* 하단 버튼 및 안내 레이아웃 */
         .action-buttons {
             display: none;
             flex-direction: column;
@@ -228,12 +238,12 @@
             background-color: #218838;
         }
 
-        /* 📸 새롭게 추가된 SNS 공유 및 캡처 안내 문구 스타일 */
+        /* SNS 공유 및 캡처 안내 문구 스타일 */
         .share-notice {
-            display: none; /* 처음엔 숨겨둠 */
+            display: none; 
             margin-top: 15px;
             padding: 15px;
-            background-color: #e3f2fd; /* 은은한 블루톤 */
+            background-color: #e3f2fd; 
             border-left: 5px solid #2196f3;
             border-radius: 4px;
             color: #0d47a1;
@@ -249,6 +259,22 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 📱 [추가] 모바일 기기 화면에 맞춰 상장 레이아웃 전체가 부드럽게 줄어들고 가운데 정렬되는 치트키 */
+        @media (max-width: 540px) {
+            #certificate-area {
+                transform: scale(calc(100vw / 540));
+                transform-origin: top center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: calc((720px * (100vw / 540)) - 720px);
+            }
+            .action-buttons {
+                width: 100%;
+                max-width: calc(100vw - 40px);
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -325,12 +351,11 @@
         document.getElementById('certificate-area').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 2. 이미지 저장 함수 (안내 문구 출력 기능 추가)
+    // 2. 이미지 저장 함수
     function saveCertificate() {
         const target = document.getElementById('certificate-area');
         const name = document.getElementById('displayName').innerText;
         
-        // 💡 버튼을 누르는 즉시 하단 안내 문구를 부드럽게 노출시킵니다.
         document.getElementById('shareNotice').style.display = 'block';
         
         html2canvas(target, {
@@ -344,8 +369,7 @@
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (error) {
-                // 다운로드 차단 에러 발생 시 콘솔에만 기록을 남기고 사용자에겐 안내 문구로 우회하도록 함
-                console.warn("로컬 환경 보안 정책으로 자동 다운로드가 제한되었습니다. 화면 캡처 가이드를 노출합니다.");
+                console.warn("다운로드 제한 우회 가이드 작동");
             }
         });
     }
